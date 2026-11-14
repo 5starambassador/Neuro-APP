@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A target ring with a rising spark: focus + progress -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="5"
+        android:pathData="M54,32a22,22 0,1 1,0 44a22,22 0,1 1,0 -44z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#B3FFFFFF"
+        android:strokeWidth="4"
+        android:pathData="M54,42a12,12 0,1 1,0 24a12,12 0,1 1,0 -24z" />
+    <path
+        android:fillColor="#FF2EE6A6"
+        android:pathData="M54,48a6,6 0,1 1,0 12a6,6 0,1 1,0 -12z" />
+    <path
+        android:fillColor="#FFFFB547"
+        android:pathData="M72,30l3,7l7,3l-7,3l-3,7l-3,-7l-7,-3l7,-3z" />
+</vector>

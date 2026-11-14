@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fq_bg">#FF0F1226</color>
+    <color name="fq_icon_bg">#FF6C4BFF</color>
+
+    <style name="Theme.FocusQuest" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/fq_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>
