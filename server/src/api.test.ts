@@ -119,6 +119,18 @@ test("student joins with the code and streams live data over WebSocket", async (
   ws.terminate();
 });
 
+test("dashboard files revalidate so updates reach browsers, under a strict CSP", async () => {
+  for (const url of ["/", "/app.js", "/app.css"]) {
+    const res = await app.inject({ method: "GET", url });
+    assert.equal(res.statusCode, 200, url);
+    assert.equal(res.headers["cache-control"], "no-cache", url);
+    assert.match(String(res.headers["content-security-policy"]), /style-src 'self';/);
+  }
+  // Inline style attributes are blocked by that CSP, so the dashboard must not set them.
+  const js = (await app.inject({ method: "GET", url: "/app.js" })).body;
+  assert.ok(!js.includes('setAttribute("style"'), "app.js must style elements via CSSOM, not style attributes");
+});
+
 test("classes are isolated between schools", async () => {
   const other = await buildApp({ db: new Db(":memory:"), logger: false });
   // A session cookie from this server is meaningless to another org's data.

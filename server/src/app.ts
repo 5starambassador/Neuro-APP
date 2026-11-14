@@ -355,7 +355,11 @@ export async function buildApp(opts: AppOptions = {}): Promise<{ app: FastifyIns
   });
 
   // ---- web dashboard (static) --------------------------------------------------------
-  await app.register(fastifyStatic, { root: publicDir, index: ["index.html"], cacheControl: false });
+  // "no-cache" = browsers may keep a copy but must revalidate (ETag), so updates reach teachers immediately.
+  await app.register(fastifyStatic, {
+    root: publicDir, index: ["index.html"], cacheControl: false,
+    setHeaders: (res) => res.setHeader("Cache-Control", "no-cache"),
+  });
 
   app.addHook("onClose", async () => hub.close());
   return { app, db, hub };

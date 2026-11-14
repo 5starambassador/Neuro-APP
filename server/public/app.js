@@ -17,7 +17,8 @@
       if (v == null || v === false) return;
       if (k === "text") e.textContent = v;
       else if (k === "class") e.className = v;
-      else if (k === "style") e.setAttribute("style", v);
+      // Set through CSSOM: the strict CSP (style-src 'self') blocks style *attributes*, not this.
+      else if (k === "style") e.style.cssText = v;
       else if (k.indexOf("on") === 0) e.addEventListener(k.slice(2), v);
       else e.setAttribute(k, v === true ? "" : v);
     });

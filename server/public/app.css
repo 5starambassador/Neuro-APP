@@ -43,6 +43,9 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 
 .wrap { max-width: 1400px; margin: 0 auto; padding: 16px; }
 .topbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+/* Title keeps a readable width; the join code and buttons wrap onto the next line instead of squeezing it. */
+.topbar > .grow { flex: 1 1 260px; }
+.topbar > .code { flex: 0 0 auto; }
 .brand { font-weight: 800; color: var(--primary); letter-spacing: .2px; }
 .grow { flex: 1; min-width: 0; }
 /* Text blocks beside controls keep a readable width; the controls wrap underneath instead. */
