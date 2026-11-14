@@ -1,0 +1,37 @@
+# Production: FocusQuest behind Caddy, which gets and renews HTTPS certificates automatically.
+# 1. Point a DNS name (e.g. focus.yourschool.org) at this server.
+# 2. Copy .env.example to .env and set FOCUSQUEST_DOMAIN.
+# 3. docker compose up -d
+services:
+  focusquest:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      TRUST_PROXY: "true"
+      REQUIRE_HTTPS: "true"
+      COOKIE_SECURE: "true"
+    volumes:
+      - focusquest-data:/data
+    expose:
+      - "4000"
+
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      FOCUSQUEST_DOMAIN: ${FOCUSQUEST_DOMAIN:?Set FOCUSQUEST_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - focusquest
+
+volumes:
+  focusquest-data:
+  caddy-data:
+  caddy-config:

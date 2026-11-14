@@ -172,8 +172,14 @@ class Store(context: Context) {
         .put("haptics", s.haptics)
         .put("activeProfileId", s.activeProfileId ?: JSONObject.NULL)
         .put("className", s.className)
+        .put("onlineServer", s.onlineServer)
+        .put("onlineToken", s.onlineToken)
+        .put("onlineClassName", s.onlineClassName)
 
     private fun settingsFrom(o: JSONObject) = Settings(
+        onlineServer = o.optString("onlineServer", ""),
+        onlineToken = o.optString("onlineToken", ""),
+        onlineClassName = o.optString("onlineClassName", ""),
         defaultDurationSec = o.optInt("defaultDurationSec", 300),
         adaptiveThreshold = o.optBoolean("adaptiveThreshold", true),
         threshold = o.optInt("threshold", 50),

@@ -40,6 +40,9 @@ class FocusQuestApp : Application() {
         studentLink = StudentLink(this, hub, store, liveSession)
         webDashboard = WebDashboardServer(this, store, trainer)
 
+        // Rejoin the saved online class, if any, so the teacher sees this phone without extra steps.
+        studentLink.resumeOnline()
+
         // The browser dashboard runs exactly while a class is running.
         appScope.launch {
             trainer.state.map { it.running }.distinctUntilChanged().collect { running ->

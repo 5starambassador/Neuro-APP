@@ -78,4 +78,8 @@ data class Settings(
     val activeProfileId: String? = null,
     /** Name shown to students when this device runs Trainer mode. */
     val className: String = "",
+    /** Online class this phone belongs to (FocusQuest server); kept so it reconnects after restarts. */
+    val onlineServer: String = "",
+    val onlineToken: String = "",
+    val onlineClassName: String = "",
 )

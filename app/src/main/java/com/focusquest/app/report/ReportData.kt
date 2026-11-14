@@ -157,7 +157,7 @@ object Reports {
             change != null && change >= 8 -> "Improving"
             else -> null
         }
-        ClassRow(st, s.size, s.sumOf { it.durationSec } / 60, pct, change, last, flag)
+        ClassRow(st, s.size, (s.sumOf { it.durationSec } / 60.0).roundToInt(), pct, change, last, flag)
     }.sortedBy { it.student.name.lowercase() }
 
     fun group(group: GroupSession, students: List<Profile>, all: List<SessionRecord>): GroupReport {

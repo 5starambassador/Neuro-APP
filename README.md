@@ -76,6 +76,21 @@ folder in Android Studio and press Run.
 2. In FocusQuest open **Headset**, grant Bluetooth permission, and tap the device.
 3. Check that signal quality is high, then pick a game on **Train**.
 
+## Online classes (FocusQuest server)
+
+The `server/` folder is a cloud service (Node, Fastify, SQLite) that removes the
+same-network limits: teachers sign in from any browser, anywhere, and phones join over the
+internet with HTTPS and secure WebSockets. Classes, rosters and history live on the server, so
+no tablet has to stay on. See [server/README.md](server/README.md) to run or deploy it
+(Docker + Caddy gives automatic HTTPS).
+
+In the app: **Settings → Join a class → Online class**, enter the server address and the
+6-letter class code. The phone remembers the class and reconnects by itself after restarts
+or network drops; results are resent until the server confirms them. Release builds only
+accept `https://` servers.
+
+The same-Wi‑Fi Trainer mode below still works with no internet at all.
+
 ## Running a class
 
 1. On the trainer tablet: **Settings → Trainer mode**, enter a class name, **Start class**.

@@ -1,0 +1,7 @@
+{$FOCUSQUEST_DOMAIN} {
+	encode gzip
+	# WebSockets and Server-Sent Events pass straight through.
+	reverse_proxy focusquest:4000 {
+		flush_interval -1
+	}
+}

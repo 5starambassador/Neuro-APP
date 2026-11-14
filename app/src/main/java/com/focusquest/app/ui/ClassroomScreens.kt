@@ -33,6 +33,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -83,6 +86,9 @@ fun JoinClassScreen(vm: AppViewModel) {
     }
 
     var codeFor by remember { mutableStateOf<FoundClass?>(null) }
+    var online by remember { mutableStateOf(true) }
+    var server by remember { mutableStateOf(settings.onlineServer) }
+    var onlineCode by remember { mutableStateOf("") }
     var host by remember { mutableStateOf(link.host) }
     var port by remember { mutableStateOf(if (link.port > 0) "${link.port}" else "") }
     var code by remember { mutableStateOf("") }
@@ -109,7 +115,7 @@ fun JoinClassScreen(vm: AppViewModel) {
                                 LinkPhase.Connected -> "Connected to ${link.className}"
                                 LinkPhase.Connecting -> "Connecting…"
                                 LinkPhase.Reconnecting -> link.message ?: "Reconnecting…"
-                                LinkPhase.Error -> "Couldn't join"
+                                LinkPhase.Error -> "Not connected"
                                 LinkPhase.Idle -> "Not in a class"
                             },
                             style = MaterialTheme.typography.titleMedium,
@@ -125,7 +131,8 @@ fun JoinClassScreen(vm: AppViewModel) {
                 if (link.phase == LinkPhase.Connected) {
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Your trainer can now see your attention and calm live, and may start games for the class. " +
+                        (if (link.online) "Online class on ${link.server}. " else "Same Wi‑Fi class. ") +
+                            "Your teacher can now see your attention and calm live, and may start games for the class. " +
                             "Keep FocusQuest open.",
                         color = FqColors.TextDim, style = MaterialTheme.typography.bodyMedium,
                     )
@@ -137,6 +144,42 @@ fun JoinClassScreen(vm: AppViewModel) {
             }
         }
         if (link.phase == LinkPhase.Idle || link.phase == LinkPhase.Error) {
+            item {
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    SegmentedButton(selected = online, onClick = { online = true }, shape = SegmentedButtonDefaults.itemShape(0, 2)) { Text("Online class") }
+                    SegmentedButton(selected = !online, onClick = { online = false }, shape = SegmentedButtonDefaults.itemShape(1, 2)) { Text("Same Wi‑Fi") }
+                }
+            }
+        }
+        if ((link.phase == LinkPhase.Idle || link.phase == LinkPhase.Error) && online) {
+            item {
+                Card {
+                    Text("Join an online class", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Works from school or home. Your teacher gives you the server address and a 6-letter class code.",
+                        color = FqColors.TextDim, style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        server, { server = it.trim() }, label = { Text("Server address") },
+                        placeholder = { Text("focus.yourschool.org") }, singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri), modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        onlineCode, { v -> onlineCode = v.uppercase().filter { it.isLetterOrDigit() }.take(6) },
+                        label = { Text("Class code") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Button(
+                        onClick = { vm.studentLink.joinOnline(server, onlineCode) },
+                        enabled = server.isNotBlank() && onlineCode.length == 6 && me != null,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text("Join class") }
+                }
+            }
+        }
+        if ((link.phase == LinkPhase.Idle || link.phase == LinkPhase.Error) && !online) {
             item { SectionTitle("Classes nearby") }
             if (found.isEmpty()) {
                 item {
