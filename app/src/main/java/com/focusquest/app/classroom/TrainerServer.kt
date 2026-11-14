@@ -34,6 +34,8 @@ import java.util.concurrent.ConcurrentHashMap
 data class LiveStudent(
     val profile: Profile,
     val connected: Boolean = false,
+    /** Joined at least once during this class (so going offline is worth an alert). */
+    val everConnected: Boolean = false,
     val lastSeen: Long = 0L,
     val attention: Int = 0,
     val meditation: Int = 0,
@@ -48,7 +50,7 @@ data class LiveStudent(
 ) {
     /** Reasons this student may need the trainer's help right now (empty = fine). */
     fun alerts(now: Long = SystemClock.elapsedRealtime()): List<String> = buildList {
-        if (!connected) { add("Disconnected"); return@buildList }
+        if (!connected) { if (everConnected) add("Disconnected"); return@buildList }
         if (source == "None") add("No headset")
         else if (poorSignalSince != 0L && now - poorSignalSince > 10_000) add("Poor signal")
         val s = session
@@ -196,7 +198,7 @@ class TrainerServer(private val context: Context, private val store: Store) {
             studentId = profile.id
             clients.put(profile.id, client)?.close() // replace an older connection from the same student
             store.upsertClassStudent(profile)
-            updateStudent(profile.id) { (it ?: LiveStudent(profile)).copy(profile = profile, connected = true, lastSeen = SystemClock.elapsedRealtime()) }
+            updateStudent(profile.id) { (it ?: LiveStudent(profile)).copy(profile = profile, connected = true, everConnected = true, lastSeen = SystemClock.elapsedRealtime()) }
             client.send(Protocol.welcome(_state.value.className))
 
             while (true) {

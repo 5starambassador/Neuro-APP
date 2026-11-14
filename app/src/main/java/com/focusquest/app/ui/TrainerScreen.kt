@@ -167,6 +167,8 @@ fun TrainerScreen(vm: AppViewModel) {
             }
         }
 
+        item(span = { GridItemSpan(maxLineSpan) }) { WebDashboardCard(vm, state.host) }
+
         item(span = { GridItemSpan(maxLineSpan) }) { GroupControl(vm) }
 
         val sorted = state.students.values.sortedWith(
@@ -217,6 +219,42 @@ private fun StartClassCard(initialName: String, onStart: (String) -> Unit) {
         Spacer(Modifier.height(12.dp))
         Button(onClick = { onStart(name.trim().ifEmpty { "FocusQuest class" }) }, modifier = Modifier.fillMaxWidth().height(50.dp)) {
             Text("Start class")
+        }
+    }
+}
+
+@Composable
+private fun WebDashboardCard(vm: AppViewModel, host: String?) {
+    val web by vm.webDashboard.state.collectAsStateWithLifecycle()
+    if (!web.running) return
+    var showPin by remember { mutableStateOf(false) }
+    Card {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Web dashboard", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Open on a laptop or projector on this Wi‑Fi:",
+                    color = FqColors.TextDim, style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    "http://${host ?: "<tablet-ip>"}:${web.port}",
+                    color = FqColors.Calm, style = MaterialTheme.typography.titleMedium,
+                )
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text("PIN", color = FqColors.TextDim, style = MaterialTheme.typography.bodyMedium)
+                // Hidden by default so students glancing at the tablet don't see it.
+                Text(
+                    if (showPin) web.pin else "••••••",
+                    fontSize = 22.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp,
+                    modifier = Modifier.clickable { showPin = !showPin },
+                )
+                Text(if (showPin) "tap to hide" else "tap to show", color = FqColors.TextDim, fontSize = 11.sp)
+            }
+        }
+        if (web.viewers > 0) {
+            Spacer(Modifier.height(6.dp))
+            Text("${web.viewers} browser${if (web.viewers == 1) "" else "s"} watching", color = FqColors.Focus, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -292,7 +330,7 @@ private fun StudentTile(st: LiveStudent, onClick: () -> Unit) {
                     Text(st.profile.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
                     Text(
                         when {
-                            !st.connected -> "Offline"
+                            !st.connected -> if (st.everConnected) "Offline" else "Not joined yet"
                             st.source == "Simulator" -> "Simulator"
                             st.source == "None" -> "No headset"
                             else -> "Signal ${st.signal}%"

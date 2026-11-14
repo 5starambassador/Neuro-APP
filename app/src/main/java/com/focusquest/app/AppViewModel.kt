@@ -35,6 +35,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val hub get() = fq.hub
     val store get() = fq.store
     val trainer get() = fq.trainer
+    val webDashboard get() = fq.webDashboard
     val studentLink get() = fq.studentLink
     val liveSession get() = fq.liveSession
 

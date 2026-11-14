@@ -85,6 +85,22 @@ folder in Android Studio and press Run.
    live session report when results are in. **Reports** (top-right icon) has class and
    student PDFs and the CSV export.
 
+### Web dashboard (laptop or projector)
+
+While a class is running, the tablet also serves the dashboard as a web page. The Trainer
+screen shows the address (for example `http://192.168.1.20:8080`) and a 6-digit PIN
+(tap to reveal). Open the address in any browser on the same Wi‑Fi and enter the PIN.
+
+- Live student tiles, class stats, alerts, search and sort, updated every second.
+- Start and end group sessions, send cheers, and download every report (student, class,
+  live session PDFs and CSV).
+- **Projector mode** for a shared screen: large names and a star for whoever is on goal
+  right now. Individual scores and alerts are hidden so no child is singled out.
+- Light and dark themes. No external fonts or scripts, so it works without internet.
+- Security: PIN sign-in with lockout after 5 wrong tries, an HttpOnly SameSite cookie,
+  a custom-header check on every command (blocks cross-site requests), and strict
+  security headers. A new class gets a new PIN and signs out old browsers.
+
 Classroom traffic stays on the local network and isn't encrypted. Use it on a trusted
 school Wi‑Fi. School networks with "client isolation" enabled block device-to-device
 traffic; ask IT to allow it for the training room.
